@@ -32,6 +32,13 @@ export declare function ANY(): ANYTYPE;
  */
 export declare function multi<T extends any[] | [any, ...any[]]>(sth: T): T;
 export declare function validate<T extends TypeDef>(typedef: T, value: TypeOf<T>): value is TypeOf<T>;
+/**
+ * 取值，可提供类型校验 如 value(type,{xxxx}) 会启动编译时的类型监测
+ * @param typedef 类型定义
+ * @param value 值
+ * @param full 未完成，full表示是否按结构填充默认值，即在没有提供值的时候给与补全
+ */
+export declare function value<T extends TypeDef>(typedef: T, value: TypeOf<T>, full?: boolean): TypeOf<T>;
 declare type MapBaseType<T> = MapTypeLong<T, BaseTypeMap>;
 export declare type TypeOf<T> = T extends (new (...args: any) => infer P) ? MapBaseType<P> : T extends ((...args: any) => infer PP) ? MapBaseType<PP> : _TypeOf<T>;
 declare type _TypeOf<T> = {

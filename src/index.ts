@@ -29,6 +29,8 @@ type Any = typeof ANY;
 export function multi<T extends any[]|[any,...any[]]>(sth: T): T{
   return sth;
 }
+
+
 //工具函数
 export function validate<T extends TypeDef>(typedef: T, value: TypeOf<T>): value is TypeOf<T> {
   // 每一个成员都校验成功
@@ -59,6 +61,17 @@ export function validate<T extends TypeDef>(typedef: T, value: TypeOf<T>): value
     return true;
   }
 }
+
+/**
+ * 取值，可提供类型校验 如 value(type,{xxxx}) 会启动编译时的类型监测
+ * @param typedef 类型定义
+ * @param value 值
+ * @param full 未完成，full表示是否按结构填充默认值，即在没有提供值的时候给与补全
+ */
+export function value<T extends TypeDef>(typedef: T, value: TypeOf<T>,full=false) {
+  return value;
+}
+
 // 类型提取器
 //类型提取系统
 // 请勿修改以便避免奇怪的结果
@@ -94,3 +107,27 @@ const tp = {
 
 
 type MyType = TypeOf<typeof tp>;
+
+
+const tt = {
+  a: Object,
+  b: String,
+  c: {
+    d:Number
+  }
+}
+
+const v = value(tt, {
+  a: {t:""},
+  b: "",
+  c: {
+    d:"s"
+  }
+})
+console.log(validate(tt, {
+  a: {t:""},
+  b: "",
+  c: {
+    d:100
+  }
+}))

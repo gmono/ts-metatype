@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.validate = exports.multi = exports.ANY = void 0;
+exports.value = exports.validate = exports.multi = exports.ANY = void 0;
 function ANY() {
     //构造器返回的应该是默认值
     return {};
@@ -47,6 +47,16 @@ function validate(typedef, value) {
     }
 }
 exports.validate = validate;
+/**
+ * 取值，可提供类型校验 如 value(type,{xxxx}) 会启动编译时的类型监测
+ * @param typedef 类型定义
+ * @param value 值
+ * @param full 未完成，full表示是否按结构填充默认值，即在没有提供值的时候给与补全
+ */
+function value(typedef, value, full = false) {
+    return value;
+}
+exports.value = value;
 // 测试部分
 const tp = {
     a: Object,
@@ -60,3 +70,24 @@ const tp = {
     s: [Object, Number],
     sss: ANY
 };
+const tt = {
+    a: Object,
+    b: String,
+    c: {
+        d: Number
+    }
+};
+const v = value(tt, {
+    a: { t: "" },
+    b: "",
+    c: {
+        d: "s"
+    }
+});
+console.log(validate(tt, {
+    a: { t: "" },
+    b: "",
+    c: {
+        d: 100
+    }
+}));

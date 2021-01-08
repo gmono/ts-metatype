@@ -3,7 +3,8 @@
 主要功能(打勾表示已经实现):
 - [x] 定义运行时类型
 - [x] 在开发时提供等同于Typescript类型定义的提示功能（类型生成）
-- [ ] 使用typedef对value进行校验
+- [x] 使用typedef对value进行校验
+  - [x] validate函数提供的结果可以被编辑器用作类型跟踪
 - [ ] 支持可扩展的类型定义（自定义class）
 - [ ] 扩展类型定义
    - [ ] 支持在类型定义中添加默认值
@@ -13,6 +14,7 @@
    - [ ] 对不同模态的类型定义实现兼容
 # Example
 以下为已实现功能的测试
+## 静态类型获取
 ```ts
 // 测试部分
 const tp = {
@@ -32,6 +34,43 @@ const tp = {
 type MyType = TypeOf<typeof tp>;
 
 // 此时MyType的类型和直接使用interface或type关键字定义的类型一致，支持编译器提示
+```
+## 编译时数据类型检测
+```ts
+const tt = {
+  a: Object,
+  b: String,
+  c: {
+    d:Number
+  }
+}
+//! 以下代码会报错 d的类型错误，应该为number
+const v = value(tt, {
+  a: {t:""},
+  b: "",
+  c: {
+    d:"s"
+  }
+})
+```
+
+## 运行时类型校验
+```ts
+const tt = {
+  a: Object,
+  b: String,
+  c: {
+    d:Number
+  }
+}
+//以下代码得到true ，可尝试修改其中数据类型，查看校验结果
+console.log(validate(tt, {
+  a: {t:""},
+  b: "",
+  c: {
+    d:100
+  }
+}))
 ```
 
 # 问题
