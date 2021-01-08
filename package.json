@@ -1,6 +1,6 @@
 {
   "name": "ts-metatype",
-  "version": "0.5.0-alpha",
+  "version": "0.6.0",
   "description": "define type in runtime by typescipt",
   "main": "index.js",
   "keywords": [
