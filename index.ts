@@ -50,6 +50,7 @@ type _TypeOf<T> = {
 }
 
 
+
 // 测试部分
 const tp = {
   a: Object,
