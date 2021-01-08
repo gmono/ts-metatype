@@ -2,7 +2,7 @@
   "name": "ts-metatype",
   "version": "0.6.1-maintain1",
   "description": "define type in runtime by typescipt",
-  "main": "index.js",
+  "main": "./dist/index.js",
   "keywords": [
     "metatype",
     "meta",

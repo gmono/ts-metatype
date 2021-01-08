@@ -2,6 +2,7 @@ import type { MapTypeLong } from "ts-metacode";
 //定义类型
 // 功能 校验 生成默认值  编辑(setValue函数 自带校验) 生成类型
 //使用构造器定义内心类型
+//类型即构造器 任何构造器都可以用于类型 校验使用instanceof来进行
 export type TypeDef = { [idx: string]: TypeDef } | Function[] | Function;
 // 基本类型映射表
 // 请勿改变顺序！
@@ -30,7 +31,33 @@ export function multi<T extends any[]|[any,...any[]]>(sth: T): T{
 }
 //工具函数
 export function validate<T extends TypeDef>(typedef: T, value: TypeOf<T>): value is TypeOf<T> {
-  
+  // 每一个成员都校验成功
+  // 原生类型需要使用typeof判断
+  const tp = typedef as any;
+  const rawMap = {
+    string: String,
+    number: Number
+  }
+  for (let k in rawMap) {
+    if (typeof value == k) return tp == rawMap[k];
+  }
+  //到这里说明没找到 不是原生类型 
+  if (typeof typedef == "function") {
+    // 构造器或构造函数
+    // 这里可以自动追溯 在原型链上
+    return value instanceof tp;
+  }
+  if (typeof typedef == "object") {
+    // 每个成员都validate成功
+    let ok = true;
+    const v = value as any;
+    for (let k in typedef) {
+      //没提供值就是undefined
+      //! 这里要处理v本身是null和undefined的情况
+      if (!validate(tp[k], v[k])) return false;
+    }
+    return true;
+  }
 }
 // 类型提取器
 //类型提取系统
