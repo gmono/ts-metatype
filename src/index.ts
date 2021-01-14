@@ -7,21 +7,22 @@ export type TypeDef = { [idx: string]: TypeDef } | Function[] | Function;
 // 基本类型映射表
 // 请勿改变顺序！
 //! object拦截问题  尚未解决
+// 解决拦截问题 通过对constructor进行特殊处理 而不是映射出的类型
+//更改映射表
 type BaseTypeMap = [
-  [String, string],
-  [Number, number],
-  [any[], any[]],
-  [ANYTYPE,any],
-  [Object, object],
+  [StringConstructor, string],
+  [NumberConstructor, number],
+  [ObjectConstructor, object],
+  [ArrayConstructor,any[]],
+  //这是没有映射到的情况 因此any类型被占用
+  [any,never]
 ]
 
-// ANY类型的定义扩展了 原生类型的范围
-type ANYTYPE = {};
-export function ANY():ANYTYPE{
+export function Any():any{
   //构造器返回的应该是默认值
-  return {};
+  return null;
 }
-type Any = typeof ANY;
+export {Any as ANY};
 /**
  * 用于声明元组,不使用此函数声明的则是或类型数组
  * @param sth 元组
@@ -75,59 +76,26 @@ export function value<T extends TypeDef>(typedef: T, value: TypeOf<T>,full=false
 // 类型提取器
 //类型提取系统
 // 请勿修改以便避免奇怪的结果
-type MapBaseType<T> = MapTypeLong<T, BaseTypeMap>;
-export type TypeOf<T> =
-  T extends (new (...args: any) => infer P) ? MapBaseType<P> :
-  T extends ((...args: any) => infer PP) ? MapBaseType<PP> :
-  _TypeOf<T>;
-
-type _TypeOf<T> = {
-  [idx in keyof T]:
-  T[idx] extends (new (...args: any) => infer P) ? MapBaseType<P> :
-  T[idx] extends ((...args: any) => infer PP) ? MapBaseType<PP> :
-  T[idx] extends (infer PPP)[] ? TypeOf<PPP>[]:
-  T[idx] extends TypeDef? _TypeOf<T[idx]>:never
+type MapBaseType<Cons> = MapTypeLong<Cons, BaseTypeMap>;
+// 如果是对象直接开始对象映射
+export type TypeOf<T>=
+//T的三种情况 1 对象需要进行对象映射 2构造器且basemap出never，进行构造器映射，3 构造器且映射出非never ，则直接返回
+//构造器映射 先进行基础类型转换 转换成功就不是构造器而是number string等，不成功就是never
+//如果失败 对其进行构造器映射 如果成功 直接返回基础映射结果
+MapBaseType<T> extends never? _Type<T>:
+MapBaseType<T>;
+// 构造器与对象映射
+type _Type<T>=
+//如果是构造器就返回结果 否则就当对象处理
+T extends (new (...args: any) => infer P) ? P :
+T extends ((...args: any) => infer PP) ? PP :
+__Type<T>;
+//对象映射
+type __Type<T>={
+  [idx in keyof T]:TypeOf<T[idx]>
 }
 
 
 
-// // 测试部分
-// const tp = {
-//   a: Object,
-//   b: String,
-//   c:Number,
-//   h: {
-//     c: Object
-//   },
-//   k: multi([Object, Array, String]),
-//   // default this declare a type of (number|object)[]
-//   s: [Object, Number],
-//   sss:ANY
-// };
 
 
-// type MyType = TypeOf<typeof tp>;
-
-
-// const tt = {
-//   a: Object,
-//   b: String,
-//   c: {
-//     d:Number
-//   }
-// }
-
-// const v = value(tt, {
-//   a: {t:""},
-//   b: "",
-//   c: {
-//     d:"s"
-//   }
-// })
-// console.log(validate(tt, {
-//   a: {t:""},
-//   b: "",
-//   c: {
-//     d:100
-//   }
-// }))

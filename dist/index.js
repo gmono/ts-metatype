@@ -1,10 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.value = exports.validate = exports.multi = exports.ANY = void 0;
-function ANY() {
-    return {};
+exports.value = exports.validate = exports.multi = exports.ANY = exports.Any = void 0;
+function Any() {
+    return null;
 }
-exports.ANY = ANY;
+exports.Any = Any;
+exports.ANY = Any;
 function multi(sth) {
     return sth;
 }

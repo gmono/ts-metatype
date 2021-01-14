@@ -14,7 +14,8 @@
     "类型定义"
   ],
   "scripts": {
-    "test": "node ./dist/index.js"
+    "dev":"tsc -w",
+    "test": "node ./dist/test.js"
   },
   "repository": {
     "type": "git",
