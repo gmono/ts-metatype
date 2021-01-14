@@ -1,6 +1,6 @@
 {
   "name": "ts-metatype",
-  "version": "0.7.1-maintain",
+  "version": "0.8.0-alpha",
   "description": "define type in runtime by typescipt",
   "main": "./dist/index.js",
   "keywords": [
@@ -14,7 +14,7 @@
     "类型定义"
   ],
   "scripts": {
-    "dev":"tsc -w",
+    "dev": "tsc -w",
     "test": "node ./dist/test.js"
   },
   "repository": {

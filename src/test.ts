@@ -1,22 +1,40 @@
 import { multi, Any, TypeOf, value, validate, ANY } from '.';
 
+class A{
+    constructor(){
+
+    }
+    public a:number=1;
+}
+class B{
+    constructor(){
+
+    }
+    public a:string="";
+}
 // 测试部分
 const tp = {
-  a: Object,
-  b: String,
-  c:Number,
-  h: {
-    c: Object
-  },
-  k: multi([Object, Array, String]),
-  // default this declare a type of (number|object)[]
-  s: [Object, Number],
-  sss:ANY
+    t:Number,
+    tt:String,
+    s:Object,
+    k:multi([Number,String,Array,A]),
+    anyv:Any,
+    //基本类型的或类型
+    or:[String,Object],
+    //非基本类型的或类型 不能和基本类型混同
+    ar:[A,B],
+  myclass:A
 };
 
+type ss<T>={[idx in keyof T]:T[idx]};
+
+type a=ss<(string|object|typeof A)[]>
 
 type MyType = TypeOf<typeof tp>;
-
+let t:MyType={
+    myclass:1
+}
+t.myclass
 
 const tt = {
   a: Object,

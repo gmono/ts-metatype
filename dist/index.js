@@ -14,7 +14,8 @@ function validate(typedef, value) {
     const tp = typedef;
     const rawMap = {
         string: String,
-        number: Number
+        number: Number,
+        object: Object,
     };
     for (let k in rawMap) {
         if (typeof value == k)
@@ -22,6 +23,16 @@ function validate(typedef, value) {
     }
     if (typeof typedef == "function") {
         return value instanceof tp;
+    }
+    if (typedef instanceof Array) {
+        let ok = false;
+        for (let tt of typedef) {
+            if (validate(tt, value)) {
+                ok = true;
+                break;
+            }
+        }
+        return ok;
     }
     if (typeof typedef == "object") {
         let ok = true;
@@ -32,6 +43,7 @@ function validate(typedef, value) {
         }
         return true;
     }
+    return false;
 }
 exports.validate = validate;
 function value(typedef, value, full = false) {
