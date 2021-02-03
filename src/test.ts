@@ -1,4 +1,4 @@
-import { multi, Any, TypeOf, value, validate, ANY } from '.';
+import { multi, Any, TypeOf, value, validate, ANY, tuple } from '.';
 
 class A{
     constructor(){
@@ -17,7 +17,7 @@ const tp = {
     t:Number,
     tt:String,
     s:Object,
-    k:multi([Number,String,Array,A]),
+    k:tuple([Number,String,Array,A]),
     anyv:Any,
     //基本类型的或类型
     or:[String,Object],
