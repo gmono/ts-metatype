@@ -1,13 +1,11 @@
 import type { MapTypeLong } from "ts-metacode";
-@DefaultValue(new T())
-class T {}
+
 const DefaultSym = Symbol("默认值");
-(T as any)[DefaultSym] = new T();
 /**
  * 自定义类型的默认值装饰器，用于让默认值生成器自动生成默认值
  * @param value 默认值
  */
-function DefaultValue<T>(value: T) {
+export function DefaultValue<T>(value: T) {
   return (target: T) => {
     (target as any)[DefaultSym] = value;
   };
@@ -19,12 +17,12 @@ function DefaultValue<T>(value: T) {
 /**
  * 表示一个复杂类型定义，一般等同于一个类的定义，其定义了一个对象
  */
-export type ComplexTypeDef = { [idx: string]: TypeDef } | Function[];
+export type ComplexTypeDef = { [idx: string]: TypeDef };
 /**
  * 一般类型定义，主要类型定义，可以是基本类型和复杂类型，可以是自定义构造器和返回某一类型的函数
  * 是本包的基础
  */
-export type TypeDef = ComplexTypeDef | Function;
+export type TypeDef = ComplexTypeDef | Function|Function[];
 //keys表示里面有的key
 /**
  * 带值列表的类型定义，其中所有的值都是经过了校验函数校验的值，包括静态校验和动态校验
